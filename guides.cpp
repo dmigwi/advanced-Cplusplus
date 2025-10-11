@@ -1,7 +1,8 @@
 #include <iterator>
 #include <type_traits>
 
-template <typename T> struct MyVec {
+template <typename T> 
+struct MyVec {
     template <typename Iter> 
     MyVec(Iter, Iter) { }
 };
