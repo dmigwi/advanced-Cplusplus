@@ -71,8 +71,7 @@ template <typename F, typename... Args>
 decltype(auto) function_logging(F&& f, Args&&... args)
 {
     // Log argument types using folding expressions.
-    (std::cout << ... << (std::string(typeid(Args).name()) + ", "));
-    std::cout << "\n";
+    (std::cout << ... << (std::string(typeid(Args).name()) + ", ")) << "\n";
 
     // The perfect forward call.
     return std::forward<F>(f)(std::forward<Args>(args)...);
