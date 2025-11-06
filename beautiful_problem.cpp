@@ -2,19 +2,10 @@
 #include <vector>
 #include <algorithm>
 
-const int INF = 10'000'000;
-
 struct Info {
     std::vector<int> data;                      // test case data
     std::vector<std::pair<int,int>> range;    // iterator interval;
 };
-
-int func(int x, int min, int max) {
-    auto result = (x - min) * (x - max);
-    if (result >= 0)
-        return 1;
-    return 0;
-}
 
 int main () {
     // Optimize I/O operations
@@ -43,30 +34,37 @@ int main () {
             int s, e {};
             std::cin >> s >> e;
 
-            range.first = --s;  // adjust to zero based index
-            range.second = --e; // adjust to zero based index
+            range.first = s;
+            range.second = e;
         }
     }
        
     // Start processing data for each test instance
     for (auto test : values) {
-        for (size_t k {0}; k < test.data.size(); ++k) {
-            int output = INF;
-            auto dataCopy = test.data;
+        int max = 0;
+        int size = static_cast<int>(test.data.size());
+        int min = size;
 
-            // Test all the permutations.
-            do {
-                // For each permutation loop through all ranges and get the min.
-                for (auto [s, e]: test.range) {
-                    auto [min, max] = std::minmax_element(
-                            dataCopy.begin() + s, dataCopy.begin() + e
-                        );
-                    output = std::min(output, func(test.data[k], *min, *max));
-                }
-            } while (std::next_permutation(dataCopy.begin(), dataCopy.end()));
-            std::cout << output << ' ';
+        for (auto [l, r] : test.range) {
+            min = std::min(min, l);
+            max = std::max(max, r);
         }
-        std::cout << '\n';
+
+        std::string result (test.data.size(), '0');
+        // Test for possible ks 1 <= x <= 0.
+        for (int x {1}; x <= size; ++x) {
+            bool has_smaller = false, has_larger = false;
+                for (int v : test.data) {
+                    if (v < x) has_smaller = true;
+                    if (v > x) has_larger = true;
+                    if (has_smaller && has_larger) break;
+                }
+
+                // check if is overlapping.
+                if (has_smaller && has_larger) 
+                    *(result.begin()+(x - 1)) = '1';
+        }
+        std::cout << result << '\n';
     }
 
     return 0;
